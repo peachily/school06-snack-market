@@ -1,4 +1,5 @@
 import { useDraggable } from '@dnd-kit/react';
+import { getCashLabel } from '../data/cash';
 import type { Cash } from '../data/types';
 import type { AvailableCash, CashInteraction } from '../hooks/useCashInteraction';
 import { MoneyPiece } from './MoneyPiece';
@@ -14,10 +15,10 @@ export function DraggableMoney({ token, cash, interaction }: Props) {
       className="money-button"
       data-cash-button={token.id}
       data-dragging={isDragging || isDropping || undefined}
-      aria-label={`${cash.denomination.toLocaleString('ko-KR')}원 ${cash.kind === 'banknote' ? '지폐' : '동전'}, ${token.slotIndex + 1}번`}
+      aria-label={`${getCashLabel(cash)}, ${token.slotIndex + 1}번`}
       aria-pressed={interaction.selectedId === token.id}
       onPointerDown={interaction.preparePointer}
-      onKeyDown={() => interaction.preparePointer()}
+      onKeyDown={interaction.preparePointer}
       onClick={(event) => interaction.selectCash(token.id, event.detail === 0)}
       onDragStart={(event) => event.preventDefault()}
     >

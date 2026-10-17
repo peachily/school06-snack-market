@@ -7,11 +7,11 @@ import type { CashInteraction } from '../hooks/useCashInteraction';
 type Props = { place: typeof places[number]; digit: Digit; interaction: CashInteraction };
 
 export function DigitTarget({ place, digit, interaction }: Props) {
-  const { ref, isDropTarget } = useDroppable({ id: place.corePlace, collisionDetector: pointerIntersection });
+  const { ref } = useDroppable({ id: place.corePlace, collisionDetector: pointerIntersection });
   const error = interaction.rejected?.place === place.corePlace;
   return (
     <button ref={ref} type="button" className="digit-target" data-drop-place={place.corePlace}
-      data-over={isDropTarget || undefined} aria-label={`${place.label}의 자리`}
+      aria-label={`${place.label}의 자리`}
       onClick={() => interaction.choosePlace(place.corePlace)}
       onKeyDown={(event) => {
         const index = places.findIndex((item) => item.id === place.id);

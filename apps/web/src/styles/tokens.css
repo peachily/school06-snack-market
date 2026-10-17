@@ -24,8 +24,7 @@
   --text-instruction: clamp(1rem, 1.6vw, 1.75rem);
   --text-label: clamp(1.125rem, 2vw, 2rem);
   --text-digit: clamp(3rem, 8.5svh, 6.5rem);
-  --text-tab: clamp(1.25rem, 2vw, 2rem);
-  --font-weight-normal: 400;
+  --text-tab: clamp(1rem, 1.2vw, 1.25rem);
   --font-weight-bold: 700;
 
   --spacing-1: 0.25rem;
@@ -33,9 +32,6 @@
   --spacing-3: 0.75rem;
   --spacing-4: 1rem;
   --spacing-6: 1.5rem;
-  --spacing-8: 2rem;
-  --spacing-12: 3rem;
-  --spacing-16: 4rem;
 
   --radius-photo: 1.25rem;
   --radius-digit: 1rem;
@@ -50,9 +46,10 @@
   --page-padding-x: clamp(1rem, 3vw, 3.5rem);
   --page-padding-y: clamp(1rem, 2.5svh, 2rem);
   --layout-gap: clamp(0.75rem, 2svh, 1.5rem);
-  --control-size: clamp(3rem, 4.5vw, 4.5rem);
-  --photo-width: clamp(14rem, 28vw, 28rem);
-  --photo-height: clamp(8rem, 26svh, 20rem);
+  --control-size: clamp(2rem, 2.5vw, 2.5rem);
+  --next-size: clamp(3rem, 4.5vw, 4.5rem);
+  --photo-width: clamp(22rem, 36vw, 42rem);
+  --photo-height: clamp(12rem, calc(47svh - 9rem), 30rem);
   --digit-width: clamp(4rem, 9vw, 9rem);
   --digit-height: clamp(5rem, 13svh, 9rem);
   --money-banknote-width: 10rem;
@@ -66,7 +63,6 @@
   --drop-padding: clamp(4px, 1vw, 12px);
   --drag-scale: 1.1;
   --drag-lift: -24px;
-  --duration-return: 180ms;
   --duration-shake: 180ms;
   --duration-join: 320ms;
   --duration-confetti: 700ms;

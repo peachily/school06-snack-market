@@ -6,6 +6,7 @@ type SnackCardProps = { snack: Snack; onNext?: () => void };
 export function SnackCard({ snack, onNext }: SnackCardProps) {
   return (
     <figure className="snack-card">
+      <figcaption>{snack.name}</figcaption>
       <div className="snack-photo-row">
         <div className="snack-photo">
           <AssetImage src={snack.imageSrc} alt={snack.name} />
@@ -16,7 +17,6 @@ export function SnackCard({ snack, onNext }: SnackCardProps) {
           </button>}
         </div>
       </div>
-      <figcaption>{snack.name}</figcaption>
     </figure>
   );
 }

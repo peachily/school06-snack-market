@@ -7,6 +7,11 @@ import { findDropPlace } from './dropTarget';
 
 export type AvailableCash = CashToken & { readonly used: boolean };
 
+function findCashButton(panel: HTMLDivElement | null, id: string) {
+  return Array.from(panel?.querySelectorAll<HTMLButtonElement>('[data-cash-button]') ?? [])
+    .find((button) => button.dataset.cashButton === id);
+}
+
 export function useCashInteraction(cash: readonly AvailableCash[], onUse: (id: string, place: Place) => void, panelRef: RefObject<HTMLDivElement | null>) {
   const manager = useDragDropManager();
   const alive = useRef(true);
@@ -28,8 +33,8 @@ export function useCashInteraction(cash: readonly AvailableCash[], onUse: (id: s
     if (frame.current !== undefined) cancelAnimationFrame(frame.current);
     frame.current = requestAnimationFrame(() => {
       if (!alive.current) return;
-      const buttons = Array.from(panelRef.current?.querySelectorAll<HTMLButtonElement>('[data-cash-button]') ?? []);
-      const target = buttons.find((button) => button.dataset.cashButton === id) ?? buttons[0];
+      const target = (id ? findCashButton(panelRef.current, id) : null)
+        ?? panelRef.current?.querySelector<HTMLButtonElement>('[data-cash-button]');
       (target ?? document.querySelector<HTMLButtonElement>('.next-button') ?? document.querySelector<HTMLButtonElement>('.restart-button'))?.focus();
     });
   }
@@ -94,11 +99,7 @@ export function useCashInteraction(cash: readonly AvailableCash[], onUse: (id: s
       const previous = selected.current;
       selected.current = null;
       setSelectedId(null);
-      if (previous) {
-        panelRef.current?.querySelectorAll<HTMLButtonElement>('[data-cash-button]').forEach((button) => {
-          if (button.dataset.cashButton === previous) button.focus();
-        });
-      }
+      if (previous) findCashButton(panelRef.current, previous)?.focus();
     };
     const keydown = (event: KeyboardEvent) => { if (event.key === 'Escape') cancel(); };
     const hidden = () => { if (document.hidden) cancel(); };

@@ -6,3 +6,7 @@ export const cashCatalog = [
   { id: 'cash10', kind: 'coin', denomination: 10, place: 'ten', imageSrc: '/images/money/10.webp' },
   { id: 'cash1', kind: 'coin', denomination: 1, place: 'one', imageSrc: '/images/money/1.webp' },
 ] as const satisfies readonly Cash[];
+
+export function getCashLabel(cash: Cash): string {
+  return `${cash.denomination.toLocaleString('ko-KR')}원 ${cash.kind === 'banknote' ? '지폐' : '동전'}`;
+}
