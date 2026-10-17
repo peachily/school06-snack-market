@@ -1,0 +1,65 @@
+@theme {
+  --font-sans: "Binggrae", sans-serif;
+
+  --color-place-thousand-bg: #F8E1E3;
+  --color-place-thousand-border: #E9A6AE;
+  --color-place-hundred-bg: #DDEDF8;
+  --color-place-hundred-border: #A2C9E8;
+  --color-place-ten-bg: #E0F1E5;
+  --color-place-ten-border: #A5D5B9;
+  --color-place-one-bg: #FFF1CA;
+  --color-place-one-border: #F2D78D;
+
+  --color-cream: #FFFCF7;
+  --color-surface: #FFFEFB;
+  --color-ink: #3F352E;
+  --color-ink-soft: #75685B;
+  --color-beige: #EDE5D9;
+  --color-wallet-band: #A67550;
+  --color-wallet-stitch: #B28C70;
+  --color-tab-active: #EEDDC8;
+  --color-focus: #745238;
+
+  --text-title: clamp(2rem, 3vw, 3.5rem);
+  --text-instruction: clamp(1rem, 1.6vw, 1.75rem);
+  --text-label: clamp(1.125rem, 2vw, 2rem);
+  --text-digit: clamp(3rem, 8.5svh, 6.5rem);
+  --text-tab: clamp(1.25rem, 2vw, 2rem);
+  --font-weight-normal: 400;
+  --font-weight-bold: 700;
+
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
+  --spacing-12: 3rem;
+  --spacing-16: 4rem;
+
+  --radius-photo: 1.25rem;
+  --radius-digit: 1rem;
+  --radius-wallet: 1.5rem;
+  --radius-control: 1rem;
+  --shadow-photo: none;
+  --shadow-wallet: 0 4px 12px rgb(63 53 46 / 4%);
+}
+
+:root {
+  --page-padding-x: clamp(1rem, 3vw, 3.5rem);
+  --page-padding-y: clamp(1rem, 2.5svh, 2rem);
+  --layout-gap: clamp(0.75rem, 2svh, 1.5rem);
+  --control-size: clamp(3rem, 4.5vw, 4.5rem);
+  --photo-width: clamp(14rem, 25vw, 24rem);
+  --photo-height: clamp(8rem, 23svh, 17.5rem);
+  --digit-width: clamp(4rem, 9vw, 9rem);
+  --digit-height: clamp(5rem, 13svh, 9rem);
+  --wallet-band-height: clamp(1rem, 2.5svh, 1.75rem);
+  --border-thin: 1px;
+  --border-strong: 2px;
+  --focus-width: 3px;
+  --duration-return: 180ms;
+  --duration-shake: 180ms;
+  --duration-join: 320ms;
+  --duration-confetti: 700ms;
+}
