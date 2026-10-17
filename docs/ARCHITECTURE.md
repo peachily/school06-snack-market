@@ -6,7 +6,7 @@
 
 의존 방향은 `apps/web → packages/game-core` 하나다. core는 React, DOM, @dnd-kit/react, 이미지 경로, CSS, 브라우저 저장소를 참조하지 않는다. 앱은 core의 공개 진입점만 사용한다. 두 패키지는 pnpm의 `workspace:*`로 연결하고 별도 모노레포 빌드 오케스트레이터를 추가하지 않는다.
 
-현재 커밋은 문서 2개와 원본 이미지 34개만 포함한다. 아래 디렉터리와 타입, 함수, 컴포넌트는 후속 구현 설계이며 실행 파일을 생성하지 않는다.
+Commit 01은 문서 2개와 원본 이미지 34개만 포함한다. 아래 디렉터리와 타입, 함수, 컴포넌트는 후속 구현 설계이며 실행 파일을 생성하지 않는다.
 
 ## 2. 예정 구조
 
@@ -242,4 +242,14 @@ Cloudflare Pages에는 `apps/web/dist` 정적 산출물을 배포한다. 루트�
 
 DOM 기반 테스트만으로 실제 드래그 좌표, 터치 센서, 시각적 겹침을 입증하지 않는다. 브라우저와 실제 전자칠판에서 숫자 상자 중심·확장 가장자리·구역 사이·바깥 드롭, 9개 슬롯, 다양한 이미지 비율, 전체 키보드 흐름, 모션 감소를 확인한다. SPEC.md 인수 기준을 체크리스트로 사용한다.
 
-현재 문서·자산 이동 커밋은 파일 개수, 원본 해시, 문서 간 일관성, Git diff 검사로 검증한다. 아직 실행 코드가 없으므로 앱 빌드나 게임 테스트를 수행했다고 보고하지 않는다.
+Commit 01의 문서·자산 이동은 파일 개수, 원본 해시, 문서 간 일관성, Git diff 검사로 검증한다. 아직 실행 코드가 없으므로 앱 빌드나 게임 테스트를 수행했다고 보고하지 않는다.
+
+## 10. Commit 02 개발 환경
+
+루트에서 `pnpm dev`, `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`를 실행한다. Node.js 24를 권장하고 pnpm 10.34.7을 사용한다. 직접 의존성은 정확한 버전으로 고정하며 재현 가능한 설치는 `pnpm install --frozen-lockfile`로 수행한다.
+
+React 19, Vite 8, Tailwind CSS 4와 `@tailwindcss/vite`, TypeScript 5.9 strict mode, ESLint 10, Vitest 4를 연결한다. 웹 테스트는 jsdom과 React Testing Library를, core 테스트는 Node 환경을 사용한다. 현재 테스트는 앱 렌더링과 workspace 공개 진입점 연결만 검증한다. core는 빈 TypeScript 모듈이며 게임 로직이나 임시 게임 함수는 없다.
+
+기존 구조와 자산 경로를 유지하여 화폐는 `public/images/cash`, 예정 게임 훅은 `src/hooks`에 둔다. 비어 있는 `components`, `hooks`, `data`는 `.gitkeep`으로 추적한다. 상세 디자인, 게임 데이터, 드래그 의존성과 게임 기능은 후속 단계에서 추가한다. 실행 화면에는 제목만 표시하며 README는 설치·실행·검증 명령만 안내한다.
+
+루트 Vitest 설정은 웹과 core 프로젝트를 묶고, 웹은 Vite 플러그인 설정을 공유한다. 루트 타입 검사는 양쪽 패키지와 도구 설정 파일을 포함한다. core는 DOM 타입 없이 검사하며 공개 TypeScript 소스를 앱 번들러가 처리한다. 정적 빌드 결과는 `apps/web/dist`이며 이미지 원본이 함께 포함된다.

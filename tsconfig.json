@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "lib": [
+      "ES2022"
+    ],
+    "types": [
+      "node"
+    ]
+  },
+  "include": [
+    "vitest.config.ts",
+    "apps/web/vite.config.ts",
+    "packages/game-core/vitest.config.ts"
+  ]
+}
