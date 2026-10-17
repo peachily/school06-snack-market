@@ -77,7 +77,8 @@ describe('게임 화면 연결', () => {
     expect(container.querySelectorAll('.money-piece')).toHaveLength(question.cash.length - 1);
     const digits = getDisplayedDigits(getCurrentQuestion(state.students[1]));
     expect(screen.getByRole('group', { name: '만든 금액' })).toHaveTextContent(`${digits.thousands}${digits.hundreds}${digits.tens}${digits.ones}원`);
-    expect(screen.getByRole('group', { name: '만든 금액' }).querySelector('button')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: '천의 자리' }));
+    expect(screen.getByRole('group', { name: '만든 금액' })).toHaveTextContent(Object.values(digits).join('') + '원');
     expect(random).not.toHaveBeenCalled();
   });
 

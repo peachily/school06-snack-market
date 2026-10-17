@@ -42,6 +42,7 @@
   --radius-wallet: 1.5rem;
   --radius-control: 1rem;
   --shadow-photo: none;
+  --shadow-drag: 0 8px 16px rgb(63 53 46 / 20%);
   --shadow-wallet: 0 4px 12px rgb(63 53 46 / 4%);
 }
 
@@ -62,6 +63,9 @@
   --border-thin: 1px;
   --border-strong: 2px;
   --focus-width: 3px;
+  --drop-padding: clamp(4px, 1vw, 12px);
+  --drag-scale: 1.1;
+  --drag-lift: -24px;
   --duration-return: 180ms;
   --duration-shake: 180ms;
   --duration-join: 320ms;
