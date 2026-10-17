@@ -12,7 +12,8 @@
     "lint": "eslint . --max-warnings 0",
     "typecheck": "pnpm -r typecheck && tsc -p tsconfig.json",
     "test": "vitest run",
-    "build": "pnpm typecheck && pnpm --filter @snack-market/web build"
+    "build": "pnpm typecheck && pnpm --filter @snack-market/web build",
+    "check:assets": "node scripts/check-assets.mjs"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

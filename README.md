@@ -14,6 +14,7 @@ pnpm dev
 pnpm lint
 pnpm typecheck
 pnpm test
+pnpm check:assets
 pnpm build
 ```
 
