@@ -1,6 +1,9 @@
+import type { StudentId } from '@snack-market/game-core';
 import { StudentTabs } from './StudentTabs';
 
-export function ActivityHeader() {
+type HeaderProps = { selectedStudent: StudentId; onSelect: (id: StudentId) => void; onRestart: () => void };
+
+export function ActivityHeader({ selectedStudent, onSelect, onRestart }: HeaderProps) {
   return (
     <header className="activity-header">
       <div className="activity-heading">
@@ -8,8 +11,8 @@ export function ActivityHeader() {
         <p>현금을 드래그해서 숫자를 채워 보세요.</p>
       </div>
       <div className="header-controls">
-        <StudentTabs />
-        <button className="restart-button" type="button" aria-label="다시 시작" disabled>
+        <StudentTabs selected={selectedStudent} onSelect={onSelect} />
+        <button className="restart-button" type="button" aria-label="다시 시작" onClick={onRestart}>
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path d="M4 10a8 8 0 1 1 1 6M4 4v6h6" />
           </svg>

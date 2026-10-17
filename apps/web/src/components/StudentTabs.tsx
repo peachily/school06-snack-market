@@ -1,4 +1,6 @@
-export function StudentTabs() {
+import type { StudentId } from '@snack-market/game-core';
+
+export function StudentTabs({ selected, onSelect }: { selected: StudentId; onSelect: (id: StudentId) => void }) {
   return (
     <div className="student-tabs" role="tablist" aria-label="활동 선택">
       {([1, 2, 3] as const).map((number) => (
@@ -8,9 +10,19 @@ export function StudentTabs() {
           type="button"
           role="tab"
           className="student-tab"
-          aria-selected={number === 1}
-          aria-controls={number === 1 ? 'activity-panel' : undefined}
-          disabled
+          aria-selected={number === selected}
+          aria-controls={number === selected ? 'activity-panel' : undefined}
+          tabIndex={number === selected ? 0 : -1}
+          onClick={() => onSelect(number)}
+          onKeyDown={(event) => {
+            const target = event.key === 'ArrowRight' ? (number % 3 + 1)
+              : event.key === 'ArrowLeft' ? ((number + 1) % 3 + 1)
+              : event.key === 'Home' ? 1 : event.key === 'End' ? 3 : undefined;
+            if (target === undefined) return;
+            event.preventDefault();
+            onSelect(target as StudentId);
+            document.getElementById(`student-tab-${target}`)?.focus();
+          }}
         >
           {number}
         </button>

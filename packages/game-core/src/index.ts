@@ -3,3 +3,5 @@ export { generatePrice, splitDigits } from './price';
 export { createCashTokens } from './cash';
 export { shuffleSnacks } from './shuffle';
 export { createQuestion, createStudentQuestions } from './questions';
+export { createStudentSession, createGameState, getCurrentQuestion, getDisplayedDigits, getCashState, gameReducer } from './session';
+export type { QuestionState, StudentSession, GameState, GameAction } from './session';
