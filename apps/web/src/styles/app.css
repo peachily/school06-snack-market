@@ -357,3 +357,61 @@
   .digit-error { animation: none; }
   .money-button[data-dragging] .money-piece { transform: scale(var(--drag-scale)); }
 }
+
+.digit-track {
+  width: 100%;
+  margin-inline: auto;
+  transition: width var(--duration-join) ease-in-out;
+}
+.digit-box { transition: border-radius var(--duration-join) ease-in-out; }
+.price-unit { transition: left var(--duration-join) ease-in-out; }
+.price-digits[data-completed] .digit-track { width: calc(4 * var(--digit-width)); }
+.price-digits[data-completed] .digit-box { border-radius: 0; }
+.price-digits[data-completed] .digit-position:first-child .digit-box {
+  border-radius: var(--radius-digit) 0 0 var(--radius-digit);
+}
+.price-digits[data-completed] .digit-position:last-child .digit-box {
+  border-radius: 0 var(--radius-digit) var(--radius-digit) 0;
+}
+.price-digits[data-completed] .price-unit {
+  left: calc(50% + 2 * var(--digit-width) + var(--spacing-3));
+}
+.next-button {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border: var(--border-thin) solid var(--color-place-one-border);
+  border-radius: var(--radius-control);
+  background: var(--color-place-one-bg);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.next-button svg { width: 50%; height: 50%; fill: var(--color-ink-soft); }
+.completion-confetti {
+  position: absolute;
+  inset: 0;
+  width: calc(4 * var(--digit-width));
+  margin-inline: auto;
+  pointer-events: none;
+  animation: confetti-fade var(--duration-confetti) ease-out both;
+}
+.completion-confetti i {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  background: var(--place-border);
+  animation: confetti-spread var(--duration-confetti) ease-out both;
+}
+.completion-confetti i:nth-child(even) { border-radius: 50%; }
+@keyframes confetti-fade { 0%, 40% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes confetti-spread {
+  from { transform: translate(0, 0) rotate(0); }
+  to { transform: translate(var(--particle-x), var(--particle-y)) rotate(120deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .digit-track, .digit-box, .price-unit { transition: none; }
+  .completion-confetti { display: none; }
+  .completion-confetti, .completion-confetti i { animation: none; }
+}

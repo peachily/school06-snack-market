@@ -66,7 +66,6 @@ describe('현금 대체 조작', () => {
       fireEvent.click(button, { detail: 1 });
       fireEvent.click(digit());
     }
-    fireEvent.click(digit());
     expect(amount()).toHaveTextContent('9000원');
     expect(container.querySelectorAll('[data-cash-button]')).toHaveLength(0);
     expect(container.querySelectorAll('.wallet-slot')).toHaveLength(36);

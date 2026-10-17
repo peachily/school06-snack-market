@@ -21,8 +21,8 @@ function ActivityContent({ game }: Props) {
   const snack = snacks.find((item) => item.id === game.question.snackId)!;
   return (
     <div ref={panelRef} className="activity-panel" id="activity-panel" role="tabpanel" aria-labelledby={`student-tab-${game.state.activeStudentId}`}>
-      <SnackCard snack={snack} />
-      <PriceDigits digits={game.digits} interaction={interaction} />
+      <SnackCard snack={snack} onNext={game.question.completed && !game.student.completed ? game.nextQuestion : undefined} />
+      <PriceDigits digits={game.digits} interaction={interaction} completed={game.question.completed} />
       <Wallet cash={game.cash} interaction={interaction} />
       <span className="sr-only" role="status" aria-live="polite">{interaction.announcement}</span>
     </div>

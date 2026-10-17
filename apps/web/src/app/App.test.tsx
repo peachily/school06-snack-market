@@ -43,13 +43,13 @@ describe('게임 화면 연결', () => {
     expect(within(screen.getByRole('tabpanel')).getAllByRole('img')[0]).toHaveAttribute('alt', firstImage);
   });
 
-  it('완료된 문제도 다음 버튼을 표시하지 않고 구성한 숫자를 유지한다', () => {
+  it('완료된 문제는 다음 버튼과 구성한 숫자를 유지한다', () => {
     let state = fresh();
     const student = state.students[1];
     const question = getCurrentQuestion(student);
     for (const cash of question.cash) state = gameReducer(state, { type: 'use-cash', studentId: 1, sessionId: student.sessionId, questionId: question.id, cashId: cash.id, targetPlace: cash.place });
     render(<App initialState={state} />);
-    expect(screen.queryByRole('button', { name: '다음' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '다음 문제' })).toBeInTheDocument();
     expect(screen.getByRole('img', { name: '고래밥' })).toBeInTheDocument();
     expect(screen.getByRole('group', { name: '만든 금액' })).toHaveTextContent('1000원');
   });

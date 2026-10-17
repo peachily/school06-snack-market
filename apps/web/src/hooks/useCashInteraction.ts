@@ -30,7 +30,7 @@ export function useCashInteraction(cash: readonly AvailableCash[], onUse: (id: s
       if (!alive.current) return;
       const buttons = Array.from(panelRef.current?.querySelectorAll<HTMLButtonElement>('[data-cash-button]') ?? []);
       const target = buttons.find((button) => button.dataset.cashButton === id) ?? buttons[0];
-      (target ?? document.querySelector<HTMLButtonElement>('.restart-button'))?.focus();
+      (target ?? document.querySelector<HTMLButtonElement>('.next-button') ?? document.querySelector<HTMLButtonElement>('.restart-button'))?.focus();
     });
   }
 
