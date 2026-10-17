@@ -213,7 +213,7 @@
 
 .wallet-band { background: var(--color-wallet-band); }
 
-.wallet-sections { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.wallet-sections { min-height: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
 
 .wallet-section {
   position: relative;
@@ -221,6 +221,7 @@
   grid-template-rows: auto minmax(0, 1fr);
   gap: var(--spacing-3);
   min-width: 0;
+  min-height: 0;
   padding: var(--spacing-4) var(--spacing-6);
   background: var(--place-bg);
 }
@@ -249,7 +250,25 @@
   min-height: 0;
 }
 
-.wallet-slot { min-width: 0; min-height: 0; }
+.wallet-slot {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  min-height: 0;
+}
+
+.money-piece {
+  width: min(100%, var(--money-width));
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  user-select: none;
+}
+
+.money-piece[data-kind="banknote"] { --money-width: var(--money-banknote-width); }
+.money-piece[data-denomination="100"] { --money-width: var(--money-100-width); }
+.money-piece[data-denomination="10"] { --money-width: var(--money-10-width); }
+.money-piece[data-denomination="1"] { --money-width: var(--money-1-width); }
 
 @media (max-width: 640px) {
   :root {
@@ -288,15 +307,4 @@
   .snack-card figcaption { margin-top: var(--spacing-2); }
 }
 
-.next-button {
-  display: grid;
-  place-items: center;
-  width: 100%;
-  height: 100%;
-  border: var(--border-thin) solid var(--color-beige);
-  border-radius: var(--radius-control);
-  background: var(--color-surface);
-  cursor: pointer;
-}
-.next-button svg { width: 50%; height: 50%; fill: currentColor; }
 .student-tab, .restart-button { cursor: pointer; }

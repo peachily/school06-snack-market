@@ -1,4 +1,4 @@
-import { createGameState, gameReducer, getCurrentQuestion } from '@snack-market/game-core';
+import { createGameState, createStudentSession, gameReducer, getCurrentQuestion, getDisplayedDigits } from '@snack-market/game-core';
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { snacks } from '../data/snacks';
@@ -43,15 +43,42 @@ describe('게임 화면 연결', () => {
     expect(within(screen.getByRole('tabpanel')).getAllByRole('img')[0]).toHaveAttribute('alt', firstImage);
   });
 
-  it('완료한 문제에만 다음 버튼을 표시하고 클릭하면 새 문제로 이동한다', () => {
+  it('완료된 문제도 다음 버튼을 표시하지 않고 구성한 숫자를 유지한다', () => {
     let state = fresh();
     const student = state.students[1];
     const question = getCurrentQuestion(student);
     for (const cash of question.cash) state = gameReducer(state, { type: 'use-cash', studentId: 1, sessionId: student.sessionId, questionId: question.id, cashId: cash.id, targetPlace: cash.place });
     render(<App initialState={state} />);
-    fireEvent.click(screen.getByRole('button', { name: '다음' }));
     expect(screen.queryByRole('button', { name: '다음' })).not.toBeInTheDocument();
-    expect(screen.getByRole('img', { name: '꼬깔콘' })).toBeInTheDocument();
-    expect(screen.getByRole('group', { name: '만든 금액' })).toHaveTextContent('0000원');
+    expect(screen.getByRole('img', { name: '고래밥' })).toBeInTheDocument();
+    expect(screen.getByRole('group', { name: '만든 금액' })).toHaveTextContent('1000원');
   });
+
+  it('학생 전환 시 과자·숫자·사용한 현금 상태를 함께 복원한다', () => {
+    let state = createGameState({ sessionId: 'progress', snackIds: snacks.map((snack) => snack.id), random: () => 0.4 });
+    const first = state.students[1];
+    const question = getCurrentQuestion(first);
+    const token = question.cash[1];
+    state = gameReducer(state, { type: 'use-cash', studentId: 1, sessionId: first.sessionId, questionId: question.id, cashId: token.id, targetPlace: token.place });
+    const second = createStudentSession({ studentId: 2, sessionId: 'second', snackIds: snacks.map((snack) => snack.id), random: () => 0.8 });
+    state = { ...state, students: { ...state.students, 2: second } };
+    const { container, rerender } = render(<App initialState={state} />);
+    const name = snacks.find((snack) => snack.id === question.snackId)!.name;
+    const random = vi.spyOn(Math, 'random');
+    expect(screen.getByRole('img', { name })).toBeInTheDocument();
+    expect(container.querySelectorAll('.money-piece')).toHaveLength(question.cash.length - 1);
+    fireEvent.click(screen.getByRole('tab', { name: '2' }));
+    const secondName = snacks.find((snack) => snack.id === getCurrentQuestion(second).snackId)!.name;
+    expect(screen.getByRole('img', { name: secondName })).toBeInTheDocument();
+    expect(container.querySelectorAll('.money-piece')).toHaveLength(getCurrentQuestion(second).cash.length);
+    fireEvent.click(screen.getByRole('tab', { name: '1' }));
+    rerender(<App initialState={state} />);
+    expect(screen.getByRole('img', { name })).toBeInTheDocument();
+    expect(container.querySelectorAll('.money-piece')).toHaveLength(question.cash.length - 1);
+    const digits = getDisplayedDigits(getCurrentQuestion(state.students[1]));
+    expect(screen.getByRole('group', { name: '만든 금액' })).toHaveTextContent(`${digits.thousands}${digits.hundreds}${digits.tens}${digits.ones}원`);
+    expect(screen.getByRole('group', { name: '만든 금액' }).querySelector('button')).toBeNull();
+    expect(random).not.toHaveBeenCalled();
+  });
+
 });

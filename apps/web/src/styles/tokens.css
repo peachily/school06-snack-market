@@ -50,10 +50,14 @@
   --page-padding-y: clamp(1rem, 2.5svh, 2rem);
   --layout-gap: clamp(0.75rem, 2svh, 1.5rem);
   --control-size: clamp(3rem, 4.5vw, 4.5rem);
-  --photo-width: clamp(14rem, 25vw, 24rem);
-  --photo-height: clamp(8rem, 23svh, 17.5rem);
+  --photo-width: clamp(14rem, 28vw, 28rem);
+  --photo-height: clamp(8rem, 26svh, 20rem);
   --digit-width: clamp(4rem, 9vw, 9rem);
   --digit-height: clamp(5rem, 13svh, 9rem);
+  --money-banknote-width: 10rem;
+  --money-100-width: 4.5rem;
+  --money-10-width: 3.875rem;
+  --money-1-width: 3.25rem;
   --wallet-band-height: clamp(1rem, 2.5svh, 1.75rem);
   --border-thin: 1px;
   --border-strong: 2px;

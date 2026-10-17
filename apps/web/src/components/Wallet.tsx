@@ -1,6 +1,6 @@
 import type { CashToken } from '@snack-market/game-core';
 import { cashCatalog } from '../data/cash';
-import { CashImage } from './CashImage';
+import { MoneyPiece } from './MoneyPiece';
 import { places } from '../data/places';
 
 const slots = Array.from({ length: 9 }, (_, index) => index);
@@ -17,8 +17,8 @@ export function Wallet({ cash }: { cash: readonly (CashToken & { readonly used: 
               {slots.map((slot) => {
                 const token = cash.find((item) => item.place === place.corePlace && item.slotIndex === slot);
                 const metadata = token && cashCatalog.find((item) => item.denomination === token.denomination);
-                return <div className="wallet-slot" key={slot}>
-                  {token && !token.used && metadata && <CashImage cash={metadata} />}
+                return <div className="wallet-slot" key={slot} data-slot-index={slot} data-cash-id={token?.id}>
+                  {token && !token.used && metadata && <MoneyPiece cash={metadata} />}
                 </div>;
               })}
             </div>

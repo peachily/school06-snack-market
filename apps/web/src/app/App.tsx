@@ -18,7 +18,7 @@ export function App({ initialState }: { initialState: GameState }) {
     <main className="classroom-layout">
       <ActivityHeader selectedStudent={game.state.activeStudentId} onSelect={game.selectStudent} onRestart={restart} />
       <div className="activity-panel" id="activity-panel" role="tabpanel" aria-labelledby={`student-tab-${game.state.activeStudentId}`}>
-        <SnackCard snack={snack} onNext={game.question.completed && !game.student.completed ? game.nextQuestion : undefined} />
+        <SnackCard snack={snack} />
         <PriceDigits digits={game.digits} />
         <Wallet cash={game.cash} />
       </div>
