@@ -13,8 +13,8 @@ Commit 01은 문서 2개와 원본 이미지 34개만 포함한다. 아래 디�
 ```text
 apps/web/
   public/
-    images/snacks/snack01.avif … snack30.avif
-    images/cash/1.webp, 10.webp, 100.webp, 1000.webp
+    images/snacks/snack-01.avif … snack-30.avif
+    images/money/1.webp, 10.webp, 100.webp, 1000.webp
     fonts/
   src/
     app/App.tsx
@@ -270,7 +270,7 @@ React 19, Vite 8, Tailwind CSS 4와 `@tailwindcss/vite`, TypeScript 5.9 strict m
 
 `data/types.ts`는 공통 Snack, Place, Cash 타입을 정의한다. Cash는 지폐·동전 종류와 액면가·자리의 허용 조합을 타입으로 제한한다. 과자 목록은 `snacks.ts`의 30개 읽기 전용 배열이며 번호·ID·이름·이미지 경로만 갖는다. `cash.ts`의 cashCatalog는 현금 4종을 정의한다. 게임 core에는 이미지 메타데이터를 넣지 않는다.
 
-Commit 04 요청 경로는 `snack-01.webp`~`snack-30.webp`, `money/1000.png`, `money/100.png`, `money/10.png`, `money/1.png`다. 기존 AVIF·WebP 원본은 가공 없이 보존한다. 신규 경로의 파일은 사용자가 추가하며 누락된 상태도 정상적인 개발 상태로 처리한다. 기존 화면은 첫 과자의 실제 이름인 고구마깡을 사용한다.
+Commit 04의 최종 경로는 사용자 확인에 따라 `snack-01.avif`~`snack-30.avif`, `money/1000.webp`, `money/100.webp`, `money/10.webp`, `money/1.webp`다. 기존 원본을 해당 위치로 이동하고 파일명만 맞췄으며 이미지 변환이나 가공은 하지 않았다. 첫 화면은 고구마깡의 이름과 실제 이미지를 사용한다. 누락된 파일은 플레이스홀더로 처리한다.
 
 `ImagePlaceholder`는 공통 대체 표시를, `AssetImage`는 로컬 이미지 경로 검사와 오류 처리 및 contain 표시를 맡는다. SnackCard와 CashImage는 같은 이미지 컴포넌트를 사용한다. 새 경로로 교체되면 이전 오류 상태를 초기화한다. CashImage는 정적 이미지 표시만 제공하며 지갑 슬롯에 현금을 배정하지 않는다. 가격 생성·드래그·진행 상태는 이번 범위에 없다.
 

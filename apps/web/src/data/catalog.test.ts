@@ -44,7 +44,7 @@ describe('확정 자산 목록', () => {
       const number = String(index + 1).padStart(2, '0');
       expect(snack.number).toBe(index + 1);
       expect(snack.id).toBe(`snack${number}`);
-      expect(snack.imageSrc).toBe(`/images/snacks/snack-${number}.webp`);
+      expect(snack.imageSrc).toBe(`/images/snacks/snack-${number}.avif`);
       expect(isImagePath(snack.imageSrc)).toBe(true);
       expect(snack).not.toHaveProperty('price');
     });
@@ -60,7 +60,7 @@ describe('확정 자산 목록', () => {
       ['coin', 1, 'one'],
     ]);
     cashCatalog.forEach((cash) => {
-      expect(cash.imageSrc).toBe(`/images/money/${cash.denomination}.png`);
+      expect(cash.imageSrc).toBe(`/images/money/${cash.denomination}.webp`);
       expect(isImagePath(cash.imageSrc)).toBe(true);
     });
   });
