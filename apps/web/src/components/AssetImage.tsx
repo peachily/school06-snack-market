@@ -14,7 +14,7 @@ function ImageContent({ src, alt }: AssetImageProps) {
     return <ImagePlaceholder label={`${alt} 이미지 없음`} />;
   }
 
-  return <img src={src} alt={alt} draggable={false} onError={() => setFailed(true)} />;
+  return <img decoding="async" src={src} alt={alt} draggable={false} onError={() => setFailed(true)} />;
 }
 
 export function AssetImage({ src, alt }: AssetImageProps) {
