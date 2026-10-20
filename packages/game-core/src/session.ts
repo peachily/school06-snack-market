@@ -47,7 +47,7 @@ export function createGameState(options: Omit<SessionOptions, 'studentId'>): Gam
   const create = (studentId: StudentId) => createStudentSession({
     ...options, studentId, sessionId: JSON.stringify([options.sessionId, studentId]),
   });
-  return { activeStudentId: 1, students: { 1: create(1), 2: create(2), 3: create(3) } };
+  return { activeStudentId: 1, students: { 1: create(1), 2: create(2), 3: create(3), 4: create(4) } };
 }
 
 export function getCurrentQuestion(session: StudentSession): QuestionState {

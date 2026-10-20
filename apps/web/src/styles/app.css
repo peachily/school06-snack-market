@@ -449,8 +449,3 @@
   .snack-card-with-price .snack-next-space { width: 28vw; }
   .target-price { font-size: clamp(1.4rem, 5vw, 2rem); }
 }
-
-.activity-switch[aria-pressed="true"] {
-  background: var(--color-tab-active);
-  border-color: var(--color-wallet-band);
-}

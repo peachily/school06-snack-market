@@ -8,6 +8,20 @@ const fresh = () => createGameState({ sessionId: 'test', snackIds: snacks.map((s
 afterEach(() => vi.restoreAllMocks());
 
 describe('게임 화면 연결', () => {
+  it('다시 시작 버튼은 현재 단계의 첫 세 문제 적응 구간을 복원한다', () => {
+    const state = createGameState({ sessionId: 'intro-reset', snackIds: snacks.map((snack) => snack.id), random: () => 0.999 });
+    const { container } = render(<App initialState={{ ...state, activeStudentId: 4, students: { ...state.students, 4: { ...state.students[4], currentIndex: 3 } } }} />);
+    expect(container.querySelectorAll('[data-cash-button]')).toHaveLength(36);
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    vi.spyOn(Math, 'random').mockReturnValue(0.999);
+    fireEvent.click(screen.getByRole('button', { name: '다시 시작' }));
+    expect(container.querySelectorAll('[data-cash-button]')).toHaveLength(20);
+    expect(screen.getByRole('tab', { name: '4' })).toHaveAttribute('aria-selected', 'true');
+    fireEvent.click(screen.getByRole('button', { name: '얼마를 낼까요?' }));
+    expect(container.querySelectorAll('[data-cash-button]')).toHaveLength(36);
+    expect(screen.getByLabelText('목표 가격')).toHaveTextContent('2000원');
+  });
+
   it('탭 선택과 키보드 이동을 연결한다', () => {
     render(<App initialState={fresh()} />);
     expect(screen.getByRole('heading', { name: '얼마일까요?' })).toBeInTheDocument();
@@ -17,6 +31,17 @@ describe('게임 화면 연결', () => {
     fireEvent.keyDown(screen.getByRole('tab', { name: '2' }), { key: 'ArrowRight' });
     expect(screen.getByRole('tab', { name: '3' })).toHaveFocus();
     expect(screen.getByRole('tab', { name: '3' })).toHaveAttribute('aria-selected', 'true');
+    fireEvent.keyDown(screen.getByRole('tab', { name: '3' }), { key: 'ArrowRight' });
+    expect(screen.getByRole('tab', { name: '4' })).toHaveFocus();
+    expect(screen.getByRole('tab', { name: '4' })).toHaveAttribute('aria-selected', 'true');
+    fireEvent.keyDown(screen.getByRole('tab', { name: '4' }), { key: 'ArrowRight' });
+    expect(screen.getByRole('tab', { name: '1' })).toHaveFocus();
+    fireEvent.keyDown(screen.getByRole('tab', { name: '1' }), { key: 'ArrowLeft' });
+    expect(screen.getByRole('tab', { name: '4' })).toHaveFocus();
+    fireEvent.click(screen.getByRole('button', { name: '얼마를 낼까요?' }));
+    expect(screen.queryByRole('tab')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: '얼마일까요?' }));
+    expect(screen.getByRole('tab', { name: '4' })).toHaveAttribute('aria-selected', 'true');
   });
 
   it('다시 시작 확인 취소 시 새 세션을 만들지 않는다', () => {

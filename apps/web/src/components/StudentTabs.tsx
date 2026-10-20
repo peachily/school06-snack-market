@@ -3,7 +3,7 @@ import type { StudentId } from '@snack-market/game-core';
 export function StudentTabs({ selected, onSelect }: { selected: StudentId; onSelect: (id: StudentId) => void }) {
   return (
     <div className="student-tabs" role="tablist" aria-label="활동 선택">
-      {([1, 2, 3] as const).map((number) => (
+      {([1, 2, 3, 4] as const).map((number) => (
         <button
           key={number}
           id={`student-tab-${number}`}
@@ -15,9 +15,9 @@ export function StudentTabs({ selected, onSelect }: { selected: StudentId; onSel
           tabIndex={number === selected ? 0 : -1}
           onClick={() => onSelect(number)}
           onKeyDown={(event) => {
-            const target = event.key === 'ArrowRight' ? (number % 3 + 1)
-              : event.key === 'ArrowLeft' ? ((number + 1) % 3 + 1)
-              : event.key === 'Home' ? 1 : event.key === 'End' ? 3 : undefined;
+            const target = event.key === 'ArrowRight' ? (number % 4 + 1)
+              : event.key === 'ArrowLeft' ? ((number + 2) % 4 + 1)
+              : event.key === 'Home' ? 1 : event.key === 'End' ? 4 : undefined;
             if (target === undefined) return;
             event.preventDefault();
             onSelect(target as StudentId);

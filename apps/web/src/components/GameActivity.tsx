@@ -21,7 +21,7 @@ function ActivityContent({ game, completed, studentId, priceActivity }: Props) {
   const interaction = useCashInteraction(game.question, game.useCash, panelRef);
   const snack = priceActivity ? getPriceSnack(game.question.snackId) : snacks.find((item) => item.id === game.question.snackId)!;
   return (
-    <div ref={panelRef} className="activity-panel" id="activity-panel" role={priceActivity ? "region" : "tabpanel"} aria-labelledby={priceActivity ? "activity-switch" : `student-tab-${studentId}`}>
+    <div ref={panelRef} className="activity-panel" id="activity-panel" role={priceActivity ? "region" : "tabpanel"} aria-labelledby={priceActivity ? "activity-title" : `student-tab-${studentId}`}>
       <SnackCard snack={snack} targetPrice={priceActivity ? game.question.targetPrice : undefined} onNext={game.question.completed && !completed ? game.nextQuestion : undefined} />
       <PriceDigits digits={game.digits} interaction={interaction} completed={game.question.completed} />
       <Wallet cash={game.cash} interaction={interaction} />

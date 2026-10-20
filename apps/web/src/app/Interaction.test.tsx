@@ -5,7 +5,8 @@ import { snacks } from '../data/snacks';
 import { App } from './App';
 
 function setup() {
-  return render(<App initialState={createGameState({ sessionId: 'interaction', snackIds: snacks.map((snack) => snack.id), random: () => 0.999 })} />);
+  const state = createGameState({ sessionId: 'interaction', snackIds: snacks.map((snack) => snack.id), random: () => 0.999 });
+  return render(<App initialState={{ ...state, students: { ...state.students, 1: { ...state.students[1], currentIndex: 3 } } }} />);
 }
 const cash = () => screen.getByRole('button', { name: '1,000원 지폐, 5번' });
 const digit = () => screen.getByRole('button', { name: '천의 자리' });

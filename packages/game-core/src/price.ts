@@ -1,19 +1,21 @@
 import { randomInteger } from './random';
 import type { Digit, Digits, Level, RandomSource } from './types';
 
-export function generatePrice(level: Level, random: RandomSource): number {
-  if (level !== 1 && level !== 2 && level !== 3) {
-    throw new RangeError('수준은 1, 2, 3 중 하나여야 합니다.');
+export function generatePrice(level: Level, random: RandomSource, introductory = false): number {
+  if (level !== 1 && level !== 2 && level !== 3 && level !== 4) {
+    throw new RangeError('수준은 1, 2, 3, 4 중 하나여야 합니다.');
   }
 
-  const thousands = randomInteger(1, 9, random);
+  const max = introductory ? 5 : 9;
+  const thousands = randomInteger(1, max, random);
   if (level === 1) return thousands * 1000;
 
-  const hundreds = randomInteger(level === 2 ? 1 : 0, 9, random);
+  const hundreds = randomInteger(introductory || level === 2 ? 1 : 0, max, random);
   if (level === 2) return thousands * 1000 + hundreds * 100;
 
-  return thousands * 1000 + hundreds * 100
-    + randomInteger(0, 9, random) * 10 + randomInteger(0, 9, random);
+  const tens = randomInteger(introductory || level === 3 ? 1 : 0, max, random);
+  const ones = level === 3 ? 0 : randomInteger(1, max, random);
+  return thousands * 1000 + hundreds * 100 + tens * 10 + ones;
 }
 
 export function splitDigits(price: number): Digits {

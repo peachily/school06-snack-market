@@ -15,7 +15,7 @@ function move(index: number, denomination = '1,000원 지폐', place = '천의 �
   fireEvent.click(screen.getByRole('button', { name: place }));
 }
 
-describe('가격만큼 옮기기 연결', () => {
+describe('얼마를 낼까요? 연결', () => {
   it('사용자가 지정한 30개 이름·가격·순서와 기존 이미지를 연결한다', () => {
     expect(priceExercises.map((item) => [getPriceSnack(item.snackId).name, item.price])).toEqual([
       ['고구마깡', 2000], ['빵또아', 1000], ['꼬깔콘', 2300], ['빼빼로', 3000], ['고래밥', 2100], ['수박바', 1900],
@@ -29,9 +29,15 @@ describe('가격만큼 옮기기 연결', () => {
 
   it('전환 시 두 활동의 진행과 선택 학생을 유지하고 가격은 새 활동에만 표시한다', () => {
     const { toggle, container } = start();
+    expect(screen.getByRole('heading', { name: '얼마일까요?' })).toBeInTheDocument();
+    expect(screen.getByText('돈을 옮겨서 가격표를 만들어 보세요.')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '얼마를 낼까요?' })).toBeInTheDocument();
     fireEvent.click(screen.getByRole('tab', { name: '2' }));
     move(1);
     toggle();
+    expect(screen.getByRole('heading', { name: '얼마를 낼까요?' })).toBeInTheDocument();
+    expect(screen.getByText('내가 좋아하는 과자와 아이스크림은 얼마일까요?')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '얼마일까요?' })).toBeInTheDocument();
     expect(screen.queryByRole('tab')).toBeNull();
     expect(screen.getByLabelText('목표 가격')).toHaveTextContent('2000원');
     expect(container.querySelectorAll('[data-cash-button]')).toHaveLength(36);

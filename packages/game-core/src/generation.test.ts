@@ -17,14 +17,16 @@ function sequence(...values: number[]): RandomSource {
   };
 }
 
-function samplesForPrice(price: number): number[] {
-  const digits = String(price).split('').map(Number);
-  return [(digits[0] - 0.5) / 9, ...digits.slice(1).map((digit) => (digit + 0.5) / 10)];
+function samplesForPrice(price: number, level: 3 | 4 = 4): number[] {
+  const { thousands, hundreds, tens, ones } = splitDigits(price);
+  return [(thousands - 0.5) / 9, (hundreds + 0.5) / 10,
+    level === 3 ? (tens - 0.5) / 9 : (tens + 0.5) / 10,
+    ...(level === 4 ? [(ones - 0.5) / 9] : [])];
 }
 
 describe('수준별 가격 생성', () => {
   it.each([
-    [1, 1000, 9000], [2, 1100, 9900], [3, 1000, 9999],
+    [1, 1000, 9000], [2, 1100, 9900], [3, 1010, 9990], [4, 1001, 9999],
   ] as const)('수준 %i의 최솟값과 최댓값', (level, min, max) => {
     expect(generatePrice(level, () => 0)).toBe(min);
     expect(generatePrice(level, () => highest)).toBe(max);
@@ -47,14 +49,26 @@ describe('수준별 가격 생성', () => {
     }
   });
 
-  it('수준 3의 모든 네 자리 수 9000개를 결정적으로 생성할 수 있다', () => {
-    for (let price = 1000; price <= 9999; price += 1) {
-      expect(generatePrice(3, sequence(...samplesForPrice(price)))).toBe(price);
+  it('수준 3의 가능한 810개 가격은 십의 자리가 있고 백의 자리 0을 허용한다', () => {
+    for (let thousands = 1; thousands <= 9; thousands += 1) {
+      for (let hundreds = 0; hundreds <= 9; hundreds += 1) {
+        for (let tens = 1; tens <= 9; tens += 1) {
+          const price = thousands * 1000 + hundreds * 100 + tens * 10;
+          expect(generatePrice(3, sequence(...samplesForPrice(price, 3)))).toBe(price);
+        }
+      }
     }
   });
 
-  it.each([1020, 3045, 5007, 8430])('0을 포함하는 %i도 허용한다', (price) => {
-    expect(generatePrice(3, sequence(...samplesForPrice(price)))).toBe(price);
+  it('수준 4의 가능한 8100개 가격은 일의 자리가 있고 백·십의 자리 0을 허용한다', () => {
+    for (let price = 1001; price <= 9999; price += 1) {
+      if (price % 10 === 0) continue;
+      expect(generatePrice(4, sequence(...samplesForPrice(price)))).toBe(price);
+    }
+  });
+
+  it.each([1001, 3045, 5007, 8431])('수준 4에서 %i를 생성한다', (price) => {
+    expect(generatePrice(4, sequence(...samplesForPrice(price)))).toBe(price);
   });
 
   it.each([-0.01, 1, NaN, Infinity])('잘못된 난수 %s를 거부한다', (sample) => {
@@ -63,7 +77,7 @@ describe('수준별 가격 생성', () => {
   });
 
   it('범위 밖 수준을 거부한다', () => {
-    expect(() => generatePrice(4 as Level, () => 0)).toThrow(RangeError);
+    expect(() => generatePrice(5 as Level, () => 0)).toThrow(RangeError);
   });
 });
 
@@ -141,13 +155,27 @@ describe('Fisher–Yates 과자 셔플', () => {
 });
 
 describe('문제 구성', () => {
+  it.each([
+    [1, 1000, 5000, 1000, 9000],
+    [2, 1100, 5500, 1100, 9900],
+    [3, 1110, 5550, 1010, 9990],
+    [4, 1111, 5555, 1001, 9999],
+  ] as const)('수준 %i는 첫 세 문제만 1~5를 쓰고 네 번째부터 전체 범위를 쓴다', (studentId, introMin, introMax, normalMin, normalMax) => {
+    for (const [random, firstPrice, laterPrice] of [[() => 0, introMin, normalMin], [() => highest, introMax, normalMax]] as const) {
+      const questions = createStudentQuestions({ studentId, sessionId: 'intro', snackIds, random });
+      expect(questions.slice(0, 3).map((q) => q.targetPrice)).toEqual([firstPrice, firstPrice, firstPrice]);
+      expect(questions.slice(3).map((q) => q.targetPrice)).toEqual(Array(27).fill(laterPrice));
+      for (const question of questions) expect(question.cash.reduce((sum, cash) => sum + cash.denomination, 0)).toBe(question.targetPrice);
+    }
+  });
+
   it('과자 ID와 독립적으로 가격을 생성하고 목표 수량·현금과 일치시킨다', () => {
-    const question = createQuestion({ questionId: 'q1', snackId: 'snack01', level: 3, random: sequence(...samplesForPrice(3420)) });
+    const question = createQuestion({ questionId: 'q1', snackId: 'snack01', level: 3, random: sequence(...samplesForPrice(3420, 3)) });
     expect(question.snackId).toBe('snack01');
     expect(question.targetPrice).toBe(3420);
     expect(question.targetDigits).toEqual({ thousands: 3, hundreds: 4, tens: 2, ones: 0 });
     expect(question.cash.reduce((sum, token) => sum + token.denomination, 0)).toBe(question.targetPrice);
-    const other = createQuestion({ questionId: 'q2', snackId: 'snack30', level: 3, random: sequence(...samplesForPrice(3420)) });
+    const other = createQuestion({ questionId: 'q2', snackId: 'snack30', level: 3, random: sequence(...samplesForPrice(3420, 3)) });
     expect(other.targetPrice).toBe(question.targetPrice);
   });
 
@@ -160,7 +188,8 @@ describe('문제 구성', () => {
     expect(first.map((q) => q.snackId)).toEqual([...snackIds.slice(1), snackIds[0]]);
     expect(second.map((q) => q.snackId)).toEqual(snackIds);
     expect(new Set(first.map((q) => q.targetPrice))).toEqual(new Set([1000]));
-    expect(new Set(second.map((q) => q.targetPrice))).toEqual(new Set([9900]));
+    expect(second.slice(0, 3).map((q) => q.targetPrice)).toEqual([5500, 5500, 5500]);
+    expect(new Set(second.slice(3).map((q) => q.targetPrice))).toEqual(new Set([9900]));
     expect(new Set([...first, ...second].map((q) => q.id)).size).toBe(60);
     const tokens = [...first, ...second].flatMap((q) => q.cash);
     expect(new Set(tokens.map((token) => token.id)).size).toBe(tokens.length);

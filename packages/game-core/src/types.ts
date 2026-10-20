@@ -1,4 +1,4 @@
-export type Level = 1 | 2 | 3;
+export type Level = 1 | 2 | 3 | 4;
 export type StudentId = Level;
 export type RandomSource = () => number;
 export type Place = 'thousands' | 'hundreds' | 'tens' | 'ones';

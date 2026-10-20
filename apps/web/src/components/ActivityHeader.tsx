@@ -7,11 +7,11 @@ export function ActivityHeader({ selectedStudent, onSelect, onRestart, priceActi
   return (
     <header className="activity-header">
       <div className="activity-heading">
-        <h1>얼마일까요?</h1>
-        <p>현금을 드래그해서 숫자를 채워 보세요.</p>
+        <h1 id="activity-title">{priceActivity ? '얼마를 낼까요?' : '얼마일까요?'}</h1>
+        <p>{priceActivity ? '내가 좋아하는 과자와 아이스크림은 얼마일까요?' : '돈을 옮겨서 가격표를 만들어 보세요.'}</p>
       </div>
       <div className="header-controls">
-        <button id="activity-switch" className="activity-switch" type="button" aria-pressed={priceActivity} onClick={onToggleActivity}>{priceActivity ? '가격만큼 옮기기' : '얼마일까요?'}</button>
+        <button id="activity-switch" className="activity-switch" type="button" onClick={onToggleActivity}>{priceActivity ? '얼마일까요?' : '얼마를 낼까요?'}</button>
         {!priceActivity && <StudentTabs selected={selectedStudent} onSelect={onSelect} />}
         <button className="restart-button" type="button" aria-label="다시 시작" onClick={onRestart}>
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">

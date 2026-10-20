@@ -33,7 +33,7 @@ describe('학생별 게임 상태', () => {
       expect(getDisplayedDigits(getCurrentQuestion(student))).toEqual({ thousands: 0, hundreds: 0, tens: 0, ones: 0 });
     }
     expect(state.students[1].questions).not.toBe(state.students[2].questions);
-    expect(new Set(Object.values(state.students).map((s) => s.sessionId)).size).toBe(3);
+    expect(new Set(Object.values(state.students).map((s) => s.sessionId)).size).toBe(4);
   });
 
   it('5번째 문제의 부분 진행을 탭 왕복 후에도 유지한다', () => {
@@ -53,7 +53,7 @@ describe('학생별 게임 상태', () => {
   });
 
   it('중간 슬롯을 사용해도 목록 순서와 다른 학생 상태는 그대로다', () => {
-    const state = fresh();
+    const state = createGameState({ sessionId: 'slots', snackIds, random: () => 0.5 });
     const snapshot = JSON.stringify(state);
     const updated = gameReducer(state, actionFor(state, 1));
     expect(JSON.stringify(state)).toBe(snapshot);

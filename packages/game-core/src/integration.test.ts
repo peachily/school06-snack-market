@@ -1,15 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import { createGameState, gameReducer, getCurrentQuestion, getDisplayedDigits, type StudentId } from './index';
 
-describe('세 학생 전체 활동 통합', () => {
-  it('서로 번갈아 진행해도 90문제의 현금·완료·독립성이 유지된다', () => {
+describe('네 단계 전체 활동 통합', () => {
+  it('서로 번갈아 진행해도 120문제의 현금·완료·독립성이 유지된다', () => {
     let seed = 73;
     const random = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
     const snackIds = Array.from({ length: 30 }, (_, i) => `snack-${i + 1}`);
     let state = createGameState({ sessionId: 'integration', snackIds, random });
-    const visited = new Map<StudentId, Set<string>>(([1, 2, 3] as const).map((id) => [id, new Set<string>()]));
+    const visited = new Map<StudentId, Set<string>>(([1, 2, 3, 4] as const).map((id) => [id, new Set<string>()]));
     for (let index = 0; index < 30; index += 1) {
-      for (const studentId of [1, 2, 3] as const) {
+      for (const studentId of [1, 2, 3, 4] as const) {
         state = gameReducer(state, { type: 'select-student', studentId });
         const student = state.students[studentId];
         const others = Object.values(state.students).filter((item) => item.studentId !== studentId);
