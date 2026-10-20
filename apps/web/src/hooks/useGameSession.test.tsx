@@ -22,7 +22,8 @@ describe('useGameSession', () => {
     expect(result.current.digits.thousands).toBe(1);
     const previous = result.current.state;
     act(() => result.current.nextQuestion());
-    expect(result.current.state).toBe(previous);
+    expect(result.current.student.currentIndex).toBe(1);
+    expect(result.current.state.students[1].questions[0]).toBe(previous.students[1].questions[0]);
   });
 
   it('완료 후 다음 문제를 연결하고 재시작은 현재 학생만 변경한다', () => {

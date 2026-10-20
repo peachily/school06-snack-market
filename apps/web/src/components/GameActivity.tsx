@@ -14,9 +14,16 @@ const sensors = [PointerSensor.configure({
   preventActivation: (event) => !event.isPrimary || event.button !== 0,
 })];
 
-type Props = { game: Pick<ReturnType<typeof useGameSession>, 'question' | 'cash' | 'digits' | 'useCash' | 'nextQuestion'>; completed: boolean; studentId?: number; priceActivity?: boolean };
+type Props = {
+  game: Pick<ReturnType<typeof useGameSession>, 'question' | 'cash' | 'digits' | 'useCash' | 'nextQuestion' | 'hasNextQuestion'> & {
+    hasPreviousQuestion?: boolean;
+    previousQuestion?: () => void;
+  };
+  studentId?: number;
+  priceActivity?: boolean;
+};
 
-function ActivityContent({ game, completed, studentId, priceActivity }: Props) {
+function ActivityContent({ game, studentId, priceActivity }: Props) {
   const panelRef = useRef<HTMLDivElement>(null);
   const interaction = useCashInteraction(game.question, game.useCash, panelRef);
   const snack = priceActivity ? getPriceSnack(game.question.snackId) : snacks.find((item) => item.id === game.question.snackId)!;
@@ -25,7 +32,10 @@ function ActivityContent({ game, completed, studentId, priceActivity }: Props) {
       <SnackCard snack={snack} targetPrice={priceActivity ? game.question.targetPrice : undefined} />
       <PriceDigits digits={game.digits} interaction={interaction} completed={game.question.completed} />
       <Wallet cash={game.cash} interaction={interaction} />
-      {game.question.completed && !completed && <button type="button" className="next-button" aria-label="다음 문제" onClick={game.nextQuestion}>
+      {priceActivity && game.hasPreviousQuestion && <button type="button" className="question-nav previous-button" aria-label="이전 문제" onClick={game.previousQuestion}>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 4 4 12 16 20Z" /></svg>
+      </button>}
+      {(!priceActivity || game.hasNextQuestion) && <button type="button" className="question-nav next-button" aria-label="다음 문제" disabled={!game.hasNextQuestion} onClick={game.nextQuestion}>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4 20 12 8 20Z" /></svg>
       </button>}
       <span className="sr-only" role="status" aria-live="polite">{interaction.announcement}</span>

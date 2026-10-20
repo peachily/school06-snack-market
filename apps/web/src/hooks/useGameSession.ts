@@ -14,6 +14,7 @@ export function useGameSession(initialState: GameState, snackIds: readonly strin
     question,
     digits: getDisplayedDigits(question),
     cash: getCashState(question),
+    hasNextQuestion: student.currentIndex < student.questions.length - 1,
     selectStudent: (studentId: StudentId) => dispatch({ type: 'select-student', studentId }),
     useCash: (cashId: string, targetPlace: Place) => dispatch({ type: 'use-cash', ...context, cashId, targetPlace }),
     nextQuestion: () => dispatch({ type: 'next-question', ...context }),

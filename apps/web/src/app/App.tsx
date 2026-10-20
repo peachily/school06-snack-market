@@ -23,7 +23,7 @@ export function App({ initialState }: { initialState: GameState }) {
   return (
     <main className="classroom-layout">
       <ActivityHeader priceActivity={priceActivity} onToggleActivity={() => setPriceActivity((value) => !value)} selectedStudent={game.state.activeStudentId} onSelect={(id) => { setInteractionEpoch((value) => value + 1); game.selectStudent(id); }} onRestart={restart} />
-      <GameActivity key={`${priceActivity}:${(priceActivity ? priceGame : game).question.id}:${interactionEpoch}`} game={priceActivity ? priceGame : game} completed={priceActivity ? priceGame.completed : game.student.completed} studentId={game.state.activeStudentId} priceActivity={priceActivity} />
+      <GameActivity key={`${priceActivity}:${(priceActivity ? priceGame : game).question.id}:${interactionEpoch}`} game={priceActivity ? priceGame : game} studentId={game.state.activeStudentId} priceActivity={priceActivity} />
     </main>
   );
 }

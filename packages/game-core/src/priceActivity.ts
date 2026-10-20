@@ -15,6 +15,7 @@ type Context = { sessionId: string; questionId: string };
 export type PriceAction =
   | ({ type: 'use-cash'; cashId: string; targetPlace: Place } & Context)
   | ({ type: 'next-question' } & Context)
+  | ({ type: 'previous-question' } & Context)
   | { type: 'restart'; sessionId: string; replacement: PriceSession };
 
 export function createPriceSession(sessionId: string, exercises: readonly PriceExercise[]): PriceSession {
@@ -42,16 +43,20 @@ export function priceSessionReducer(state: PriceSession, action: PriceAction): P
     return action.replacement.sessionId === state.sessionId ? state : action.replacement;
   }
   const question = state.questions[state.currentIndex];
-  if (state.completed || question.id !== action.questionId) return state;
+  if (question.id !== action.questionId) return state;
   if (action.type === 'next-question') {
-    return question.completed && state.currentIndex < state.questions.length - 1
+    return state.currentIndex < state.questions.length - 1
       ? { ...state, currentIndex: state.currentIndex + 1 } : state;
+  }
+  if (action.type === 'previous-question') {
+    return state.currentIndex > 0 ? { ...state, currentIndex: state.currentIndex - 1 } : state;
   }
   const updated = useQuestionCash(question, action.cashId, action.targetPlace, false);
   if (updated === question) return state;
+  const questions = state.questions.map((item, index) => index === state.currentIndex ? updated : item);
   return {
     ...state,
-    questions: state.questions.map((item, index) => index === state.currentIndex ? updated : item),
-    completed: updated.completed && state.currentIndex === state.questions.length - 1,
+    questions,
+    completed: questions.every((item) => item.completed),
   };
 }

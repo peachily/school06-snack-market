@@ -384,11 +384,10 @@
 .price-digits[data-completed] .price-unit {
   left: calc(50% + 2 * var(--digit-width) + var(--spacing-3));
 }
-.next-button {
+.question-nav {
   position: absolute;
   grid-area: 1 / 1 / 2 / 2;
   align-self: center;
-  right: 0;
   transform: translateY(calc(var(--text-label) * 0.7 + var(--spacing-2) + var(--border-thin) / 2));
   display: grid;
   place-items: center;
@@ -399,7 +398,10 @@
   cursor: pointer;
   touch-action: manipulation;
 }
-.next-button svg { width: 60%; height: 60%; fill: var(--color-wallet-band); }
+.next-button { right: 0; }
+.previous-button { left: 0; }
+.question-nav:disabled { opacity: 0.35; cursor: default; }
+.question-nav svg { width: 60%; height: 60%; fill: var(--color-wallet-band); }
 .completion-confetti {
   position: absolute;
   inset: 0;
@@ -450,7 +452,11 @@
 .target-price { font-size: clamp(2rem, 4vw, 4.5rem); white-space: nowrap; }
 .money-button:disabled { cursor: default; }
 @media (max-width: 640px) {
-  .snack-card-with-price { width: 46vw; margin-right: 36vw; }
+  .snack-card-with-price { width: 36vw; margin-right: 26vw; }
   .snack-card-with-price .snack-price-space { width: 28vw; }
   .target-price { font-size: clamp(1.4rem, 5vw, 2rem); }
+}
+
+@media (max-width: 360px) {
+  .target-price { font-size: var(--text-label); }
 }

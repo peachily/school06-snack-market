@@ -13,6 +13,31 @@ function complete(state: PriceSession) {
 }
 
 describe('가격만큼 옮기기 세션', () => {
+  it('미완성 문제를 앞뒤로 이동해도 순서·가격·사용한 현금을 유지하고 양끝을 넘지 않는다', () => {
+    let state = fresh();
+    const first = state.questions[0];
+    expect(priceSessionReducer(state, { type: 'previous-question', ...context(state) })).toBe(state);
+    state = priceSessionReducer(state, { type: 'use-cash', ...context(state), cashId: first.cash[0].id, targetPlace: 'thousands' });
+    const progress = state.questions[0];
+    const oldContext = context(state);
+    state = priceSessionReducer(state, { type: 'next-question', ...oldContext });
+    expect(state.currentIndex).toBe(1);
+    expect(priceSessionReducer(state, { type: 'next-question', ...oldContext })).toBe(state);
+    state = priceSessionReducer(state, { type: 'previous-question', ...context(state) });
+    expect(state.questions[0]).toBe(progress);
+    expect(getDisplayedDigits(state.questions[0]).thousands).toBe(1);
+    for (let i = 0; i < 29; i += 1) state = priceSessionReducer(state, { type: 'next-question', ...context(state) });
+    expect(state.currentIndex).toBe(29);
+    expect(priceSessionReducer(state, { type: 'next-question', ...context(state) })).toBe(state);
+    state = complete(state);
+    state = priceSessionReducer(state, { type: 'previous-question', ...context(state) });
+    expect(state.currentIndex).toBe(28);
+    const cash = state.questions[28].cash[0];
+    state = priceSessionReducer(state, { type: 'use-cash', ...context(state), cashId: cash.id, targetPlace: cash.place });
+    expect(getDisplayedDigits(state.questions[28]).thousands).toBe(1);
+    expect(state.questions.map((q) => ({ snackId: q.snackId, price: q.targetPrice }))).toEqual(exercises);
+  });
+
   it('고정 순서와 가격을 유지하며 매 문제 36개 고정 슬롯을 제공한다', () => {
     const state = fresh();
     expect(state.questions.map((q) => ({ snackId: q.snackId, price: q.targetPrice }))).toEqual(exercises);
@@ -25,10 +50,9 @@ describe('가격만큼 옮기기 세션', () => {
     }
   });
 
-  it('오답, 중복, 목표 초과, 0인 자리와 완료 전 다음 이동을 거부한다', () => {
+  it('오답, 중복, 목표 초과와 0인 자리 사용을 거부한다', () => {
     let state = fresh();
     const cash = state.questions[0].cash;
-    expect(priceSessionReducer(state, { type: 'next-question', ...context(state) })).toBe(state);
     expect(priceSessionReducer(state, { type: 'use-cash', ...context(state), cashId: cash[0].id, targetPlace: 'ones' })).toBe(state);
     expect(priceSessionReducer(state, { type: 'use-cash', ...context(state), cashId: cash[18].id, targetPlace: 'tens' })).toBe(state);
     for (const index of [8, 4]) state = priceSessionReducer(state, { type: 'use-cash', ...context(state), cashId: cash[index].id, targetPlace: 'thousands' });

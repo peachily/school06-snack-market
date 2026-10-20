@@ -21,7 +21,7 @@ describe('완료와 다음 문제', () => {
     const { container } = render(<App initialState={{ ...state, activeStudentId: 3, students: { ...state.students, 3: { ...student, questions: [question, ...student.questions.slice(1)] } } }} />);
     moveMoney();
     moveMoney('10원 동전, 2번', '십의 자리');
-    expect(screen.queryByRole('button', { name: '다음 문제' })).toBeNull();
+    expect(screen.getByRole('button', { name: '다음 문제' })).toBeEnabled();
     moveMoney('10원 동전, 1번', '십의 자리');
     expect(screen.getByRole('group', { name: '만든 금액' })).toHaveTextContent('1020원');
     expect(container.querySelector('.price-digits')).toHaveAttribute('data-completed', 'true');
@@ -46,14 +46,14 @@ describe('완료와 다음 문제', () => {
     expect(container.querySelector('.price-digits')).not.toHaveAttribute('data-completed');
     expect(container.querySelector('.completion-confetti')).toBeNull();
     expect(container.querySelectorAll('[data-cash-button]')).toHaveLength(1);
-    expect(screen.queryByRole('button', { name: '다음 문제' })).toBeNull();
+    expect(screen.getByRole('button', { name: '다음 문제' })).toBeEnabled();
     fireEvent.click(screen.getByRole('tab', { name: '2' }));
     expect(screen.getByRole('group', { name: '만든 금액' })).toHaveTextContent('0000원');
     fireEvent.click(screen.getByRole('tab', { name: '1' }));
     expect(container.querySelector('.snack-card figcaption')?.textContent).not.toBe(previous);
   });
 
-  it('30종을 각 한 번 진행하고 마지막에는 상단 다시 시작만 제공한다', () => {
+  it('30종을 각 한 번 진행하고 마지막에는 다음 화살표를 비활성화한다', () => {
     const { container } = render(<App initialState={fresh()} />);
     const names = new Set();
     for (let index = 0; index < 30; index += 1) {
@@ -62,13 +62,13 @@ describe('완료와 다음 문제', () => {
       if (index < 29) fireEvent.click(screen.getByRole('button', { name: '다음 문제' }));
     }
     expect(names.size).toBe(30);
-    expect(screen.queryByRole('button', { name: '다음 문제' })).toBeNull();
+    expect(screen.getByRole('button', { name: '다음 문제' })).toBeDisabled();
     expect(screen.getByRole('button', { name: '다시 시작' })).toBeInTheDocument();
     expect(container.querySelector('.completion-confetti')).not.toBeNull();
     fireEvent.click(screen.getByRole('tab', { name: '2' }));
     fireEvent.click(screen.getByRole('tab', { name: '1' }));
     expect(screen.getByRole('group', { name: '만든 금액' })).toHaveTextContent('1000원');
-    expect(screen.queryByRole('button', { name: '다음 문제' })).toBeNull();
+    expect(screen.getByRole('button', { name: '다음 문제' })).toBeDisabled();
     expect(container.querySelector('.completion-confetti')).toBeNull();
   });
 });

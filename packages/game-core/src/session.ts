@@ -86,7 +86,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
   const question = getCurrentQuestion(student);
   if (action.questionId !== question.id || student.completed) return state;
   if (action.type === 'next-question') {
-    if (!question.completed || student.currentIndex >= student.questions.length - 1) return state;
+    if (student.currentIndex >= student.questions.length - 1) return state;
     return replace({ ...student, currentIndex: student.currentIndex + 1 });
   }
 

@@ -88,9 +88,9 @@ describe('학생별 게임 상태', () => {
     expect(gameReducer(state, actionFor(state, question.cash.length))).toBe(state);
   });
 
-  it('완료 전 다음 이동 금지, 완료 후 한 번만 이동하고 새 문제는 0이다', () => {
+  it('완료 전에도 다음 이동이 가능하며 중복 이동을 막고 새 문제는 0이다', () => {
     const state = fresh();
-    expect(gameReducer(state, next(state))).toBe(state);
+    expect(gameReducer(state, next(state)).students[1].currentIndex).toBe(1);
     const done = finish(state);
     expect(getCurrentQuestion(done.students[1]).completed).toBe(true);
     const action = next(done);

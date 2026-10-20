@@ -36,7 +36,7 @@ export function useCashInteraction(question: QuestionState, onUse: (id: string, 
       if (!alive.current) return;
       const target = (id ? findCashButton(panelRef.current, id) : null)
         ?? panelRef.current?.querySelector<HTMLButtonElement>('[data-cash-button]:not(:disabled)');
-      (target ?? document.querySelector<HTMLButtonElement>('.next-button') ?? document.querySelector<HTMLButtonElement>('.restart-button'))?.focus();
+      (target ?? document.querySelector<HTMLButtonElement>('.next-button:not(:disabled)') ?? document.querySelector<HTMLButtonElement>('.previous-button') ?? document.querySelector<HTMLButtonElement>('.restart-button'))?.focus();
     });
   }
 

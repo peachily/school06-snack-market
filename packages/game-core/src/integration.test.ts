@@ -18,7 +18,7 @@ describe('네 단계 전체 활동 통합', () => {
         visited.get(studentId)!.add(question.snackId);
         expect(student.currentIndex).toBe(index);
         expect(question.cash.reduce((sum, cash) => sum + cash.denomination, 0)).toBe(question.targetPrice);
-        expect(gameReducer(state, { type: 'next-question', ...context })).toBe(state);
+        expect(gameReducer(state, { type: 'next-question', ...context }).students[studentId].currentIndex).toBe(Math.min(index + 1, 29));
         const order = [...question.cash].reverse();
         for (const [used, cash] of order.entries()) {
           const action = { type: 'use-cash', ...context, cashId: cash.id, targetPlace: cash.place } as const;

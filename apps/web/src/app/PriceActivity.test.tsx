@@ -82,7 +82,7 @@ describe('얼마를 낼까요? 연결', () => {
     expect(screen.getByRole('group', { name: '만든 금액' })).toHaveTextContent('2000원');
     expect(container.querySelector('.digit-error')).not.toBeNull();
     expect(screen.getByRole('button', { name: '1,000원 지폐, 3번' })).toBeEnabled();
-    expect(screen.queryByRole('button', { name: '다음 문제' })).toBeNull();
+    expect(screen.getByRole('button', { name: '다음 문제' })).toBeEnabled();
     move(1, '100원 동전', '백의 자리'); move(2, '100원 동전', '백의 자리'); move(3, '100원 동전', '백의 자리');
     expect(screen.getByRole('group', { name: '만든 금액' })).toHaveTextContent('2300원');
     expect(screen.getByRole('button', { name: '다음 문제' })).toBeInTheDocument();
