@@ -3,6 +3,7 @@ import { DragDropProvider, PointerSensor } from '@dnd-kit/react';
 import { Feedback, PointerActivationConstraints } from '@dnd-kit/dom';
 import { useCashInteraction } from '../hooks/useCashInteraction';
 import type { useGameSession } from '../hooks/useGameSession';
+import { getPriceSnack } from '../data/priceExercises';
 import { snacks } from '../data/snacks';
 import { PriceDigits } from './PriceDigits';
 import { SnackCard } from './SnackCard';
@@ -13,15 +14,15 @@ const sensors = [PointerSensor.configure({
   preventActivation: (event) => !event.isPrimary || event.button !== 0,
 })];
 
-type Props = { game: ReturnType<typeof useGameSession> };
+type Props = { game: Pick<ReturnType<typeof useGameSession>, 'question' | 'cash' | 'digits' | 'useCash' | 'nextQuestion'>; completed: boolean; studentId?: number; priceActivity?: boolean };
 
-function ActivityContent({ game }: Props) {
+function ActivityContent({ game, completed, studentId, priceActivity }: Props) {
   const panelRef = useRef<HTMLDivElement>(null);
-  const interaction = useCashInteraction(game.cash, game.useCash, panelRef);
-  const snack = snacks.find((item) => item.id === game.question.snackId)!;
+  const interaction = useCashInteraction(game.question, game.useCash, panelRef);
+  const snack = priceActivity ? getPriceSnack(game.question.snackId) : snacks.find((item) => item.id === game.question.snackId)!;
   return (
-    <div ref={panelRef} className="activity-panel" id="activity-panel" role="tabpanel" aria-labelledby={`student-tab-${game.state.activeStudentId}`}>
-      <SnackCard snack={snack} onNext={game.question.completed && !game.student.completed ? game.nextQuestion : undefined} />
+    <div ref={panelRef} className="activity-panel" id="activity-panel" role={priceActivity ? "region" : "tabpanel"} aria-labelledby={priceActivity ? "activity-switch" : `student-tab-${studentId}`}>
+      <SnackCard snack={snack} targetPrice={priceActivity ? game.question.targetPrice : undefined} onNext={game.question.completed && !completed ? game.nextQuestion : undefined} />
       <PriceDigits digits={game.digits} interaction={interaction} completed={game.question.completed} />
       <Wallet cash={game.cash} interaction={interaction} />
       <span className="sr-only" role="status" aria-live="polite">{interaction.announcement}</span>
@@ -29,10 +30,10 @@ function ActivityContent({ game }: Props) {
   );
 }
 
-export function GameActivity({ game }: Props) {
+export function GameActivity(props: Props) {
   return (
     <DragDropProvider sensors={sensors} plugins={(defaults) => [...defaults, Feedback.configure({ dropAnimation: { duration: 180, easing: 'ease-out' } })]}>
-      <ActivityContent game={game} />
+      <ActivityContent {...props} />
     </DragDropProvider>
   );
 }

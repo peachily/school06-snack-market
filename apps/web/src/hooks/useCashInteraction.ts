@@ -1,18 +1,19 @@
 import { useEffect, useRef, useState, type RefObject } from 'react';
 import { useDragDropManager, useDragDropMonitor } from '@dnd-kit/react';
 import { Feedback } from '@dnd-kit/dom';
-import type { CashToken, Place } from '@snack-market/game-core';
+import { canUseCash, getCashState, type QuestionState, type CashToken, type Place } from '@snack-market/game-core';
 import { places } from '../data/places';
 import { findDropPlace } from './dropTarget';
 
 export type AvailableCash = CashToken & { readonly used: boolean };
 
 function findCashButton(panel: HTMLDivElement | null, id: string) {
-  return Array.from(panel?.querySelectorAll<HTMLButtonElement>('[data-cash-button]') ?? [])
+  return Array.from(panel?.querySelectorAll<HTMLButtonElement>('[data-cash-button]:not(:disabled)') ?? [])
     .find((button) => button.dataset.cashButton === id);
 }
 
-export function useCashInteraction(cash: readonly AvailableCash[], onUse: (id: string, place: Place) => void, panelRef: RefObject<HTMLDivElement | null>) {
+export function useCashInteraction(question: QuestionState, onUse: (id: string, place: Place) => void, panelRef: RefObject<HTMLDivElement | null>) {
+  const cash = getCashState(question);
   const manager = useDragDropManager();
   const alive = useRef(true);
   const dragging = useRef(false);
@@ -34,7 +35,7 @@ export function useCashInteraction(cash: readonly AvailableCash[], onUse: (id: s
     frame.current = requestAnimationFrame(() => {
       if (!alive.current) return;
       const target = (id ? findCashButton(panelRef.current, id) : null)
-        ?? panelRef.current?.querySelector<HTMLButtonElement>('[data-cash-button]');
+        ?? panelRef.current?.querySelector<HTMLButtonElement>('[data-cash-button]:not(:disabled)');
       (target ?? document.querySelector<HTMLButtonElement>('.next-button') ?? document.querySelector<HTMLButtonElement>('.restart-button'))?.focus();
     });
   }
@@ -44,7 +45,7 @@ export function useCashInteraction(cash: readonly AvailableCash[], onUse: (id: s
     const token = cash.find((item) => item.id === id && !item.used);
     clearSelection();
     if (!token) return false;
-    if (place === token.place) {
+    if (place && canUseCash(question, id, place)) {
       onUse(id, place);
       setAnnouncement('현금을 옮겼습니다.');
       focusCash();
@@ -54,7 +55,7 @@ export function useCashInteraction(cash: readonly AvailableCash[], onUse: (id: s
       setRejected((previous) => ({ place, key: (previous?.key ?? 0) + 1 }));
       if (timer.current) clearTimeout(timer.current);
       timer.current = setTimeout(() => { if (alive.current) setRejected(null); }, 180);
-      setAnnouncement('다른 자리입니다.');
+      setAnnouncement(place === token.place ? '목표 개수를 초과합니다.' : '다른 자리입니다.');
     }
     focusCash(id);
     return false;
@@ -85,7 +86,7 @@ export function useCashInteraction(cash: readonly AvailableCash[], onUse: (id: s
         return [{ place: corePlace, left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom }];
       });
       const place = findDropPlace(point, areas);
-      const valid = cash.some((token) => token.id === id && !token.used && token.place === place);
+      const valid = place !== null && canUseCash(question, id, place);
       const feedback = manager?.plugins.find((plugin) => plugin instanceof Feedback);
       if (valid && feedback) feedback.dropAnimation = null;
       attempt(id, place);
@@ -118,10 +119,10 @@ export function useCashInteraction(cash: readonly AvailableCash[], onUse: (id: s
   }, [manager, panelRef]);
 
   return {
-    selectedId, rejected, announcement,
+    selectedId, rejected, announcement, disabled: question.completed,
     preparePointer: () => { if (!dragging.current) suppressClick.current = false; },
     selectCash: (id: string, keyboard: boolean) => {
-      if (suppressClick.current || dragging.current) return;
+      if (question.completed || suppressClick.current || dragging.current) return;
       const token = cash.find((item) => item.id === id && !item.used);
       if (!token) return;
       if (selected.current === id) { clearSelection(); return; }

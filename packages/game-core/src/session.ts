@@ -90,20 +90,28 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     return replace({ ...student, currentIndex: student.currentIndex + 1 });
   }
 
-  if (question.completed || question.usedCashIds.includes(action.cashId)) return state;
-  const cash = question.cash.find((token) => token.id === action.cashId);
-  if (!cash || cash.place !== action.targetPlace) return state;
-  const digits = getDisplayedDigits(question);
-  if (digits[cash.place] >= question.targetDigits[cash.place]) return state;
-
-  const usedCashIds = [...question.usedCashIds, cash.id];
-  const nextDigits = { ...digits, [cash.place]: digits[cash.place] + 1 };
-  const completed = usedCashIds.length === question.cash.length
-    && (Object.keys(question.targetDigits) as Place[]).every((place) => nextDigits[place] === question.targetDigits[place]);
-  const updated = { ...question, usedCashIds, completed };
+  const updated = useQuestionCash(question, action.cashId, action.targetPlace);
+  if (updated === question) return state;
   return replace({
     ...student,
     questions: student.questions.map((item, index) => index === student.currentIndex ? updated : item),
-    completed: completed && student.currentIndex === student.questions.length - 1,
+    completed: updated.completed && student.currentIndex === student.questions.length - 1,
   });
+}
+
+export function canUseCash(question: QuestionState, cashId: string, targetPlace: Place): boolean {
+  if (question.completed || question.usedCashIds.includes(cashId)) return false;
+  const cash = question.cash.find((token) => token.id === cashId);
+  return !!cash && cash.place === targetPlace
+    && getDisplayedDigits(question)[targetPlace] < question.targetDigits[targetPlace];
+}
+
+export function useQuestionCash(question: QuestionState, cashId: string, targetPlace: Place, requireAllCash = true): QuestionState {
+  if (!canUseCash(question, cashId, targetPlace)) return question;
+  const usedCashIds = [...question.usedCashIds, cashId];
+  const updated = { ...question, usedCashIds };
+  const digits = getDisplayedDigits(updated);
+  const completed = (!requireAllCash || usedCashIds.length === question.cash.length)
+    && (Object.keys(question.targetDigits) as Place[]).every((place) => digits[place] === question.targetDigits[place]);
+  return { ...updated, completed };
 }

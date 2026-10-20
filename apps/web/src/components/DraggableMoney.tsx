@@ -7,11 +7,12 @@ import { MoneyPiece } from './MoneyPiece';
 type Props = { token: AvailableCash; cash: Cash; interaction: CashInteraction };
 
 export function DraggableMoney({ token, cash, interaction }: Props) {
-  const { ref, handleRef, isDragging, isDropping } = useDraggable({ id: token.id, disabled: token.used });
+  const { ref, handleRef, isDragging, isDropping } = useDraggable({ id: token.id, disabled: token.used || interaction.disabled });
   return (
     <button
       ref={(element) => { ref(element); handleRef(element); }}
       type="button"
+      disabled={interaction.disabled}
       className="money-button"
       data-cash-button={token.id}
       data-dragging={isDragging || isDropping || undefined}

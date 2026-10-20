@@ -5,3 +5,6 @@ export { shuffleSnacks } from './shuffle';
 export { createQuestion, createStudentQuestions } from './questions';
 export { createStudentSession, createGameState, getCurrentQuestion, getDisplayedDigits, getCashState, gameReducer } from './session';
 export type { QuestionState, StudentSession, GameState, GameAction } from './session';
+export { canUseCash } from './session';
+export { createPriceSession, priceSessionReducer } from './priceActivity';
+export type { PriceExercise, PriceSession, PriceAction } from './priceActivity';
